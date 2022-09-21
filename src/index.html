@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.2.0/reveal.min.css" integrity="sha512-vFD6wFRj2whK8/X/dMgxJHinKfGlwMYtN+yRCxvxvmOgIiMIlgrFb5iOuCoqwCID+Qcq2/gY8DpmNHcAjfHWxw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.2.0/theme/black.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.2.0/plugin/highlight/monokai.min.css" integrity="sha512-z8wQkuDRFwCBfoj7KOiu1MECaRVoXx6rZQWL21x0BsVVH7JkqCp1Otf39qve6CrCycOOL5o9vgfII5Smds23rg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+      <h2>Nim for Hackers</h2>
+      </section>
+      <section>
+      <section>
+      <h2>what is nim?</h2>
+      <figure>
+<img src="../images/nim_for_hackers.png" alt="">
+<figcaption></figcaption>
+</figure>
+      </section>
+      <section>
+      <p><a href="https://nim-lang.org/">nim-lang.org</a></p>
+      <p>&quot;Efficient, expressive, elegant&quot;</p>
+      <p>&quot;Nim is a statically typed compiled systems programming language. It combines successful concepts from mature languages like Python, Ada and Modula&quot;</p>
+      </section>
+      <section>
+      <p>Esoteric language (like  🦀)</p>
+      </section>
+      <section>
+      <p>Creates small binaries</p>
+      <p>Nim compiler generates executables across all major platforms</p>
+      <p>Supports different backends: C, Cpp, <a href="../deliverables/simple.html">Javascript</a></p>
+      <p>Different memory management models</p>
+      </section>
+      <section>
+      <p>nim can be used to do a lot..</p>
+      <ul>
+<li>gui</li>
+</ul>
+      <ul>
+<li>cli</li>
+</ul>
+      <ul>
+<li>these slides</li>
+</ul>
+      </section>
+      <section>
+      <p>nim can also not do a lot</p>
+      <ul>
+<li>&quot;young&quot; lang, no comercial support</li>
+</ul>
+      </section>
+      <section>
+      <p>installation:</p>
+      <ul>
+<li><a href="https://nim-lang.org/install.html">/install.html</a></li>
+</ul>
+      <p>unix = easy</p>
+      <p>windows = gl;hf</p>
+      </section>
+      </section>
+      <section>
+      <section>
+      <h2>opsec</h2>
+      <p>what is the simplest nim program we can analyze</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hello uscg&quot;</span></code></pre>
+      <p>let's compile with:</p>
+      <p><code>nim c -d:release simple.nim</code></p>
+      </section>
+      <section>
+      <p>main()</p>
+      <figure>
+<img src="../images/simple_main.png" alt="">
+<figcaption></figcaption>
+</figure>
+      <figure>
+<img src="../images/simple_main_disasm.png" alt="">
+<figcaption></figcaption>
+</figure>
+      </section>
+      <section>
+      <p>NimMain()</p>
+      <figure>
+<img src="../images/simple_nimmain.png" alt="">
+<figcaption></figcaption>
+</figure>
+      </section>
+      <section>
+      <p>PreMainInner()</p>
+      <figure>
+<img src="../images/simple_premaininner.png" alt="">
+<figcaption></figcaption>
+</figure>
+      </section>
+      <section>
+      <p>NimMainInner()</p>
+      <figure>
+<img src="../images/simple_nimmaininner.png" alt="">
+<figcaption></figcaption>
+</figure>
+      </section>
+      <section>
+      <p>tldr:</p>
+      <pre><code>main -&gt; 
+  NimMain -&gt; 
+    PreMainInner (init libraries) -&gt; 
+      NimMainInner (main logic)
+</code></pre>
+      </section>
+      </section>
+      <section>
+      <section>
+      <h2>learn nim in Y minutes</h2>
+      </section>
+      <section>
+      <p>comments</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-comment"># single-line comment</span>
+<span class="hljs-comment">#[
+  multi line comment 
+  are put inside this
+]#</span>
+
+<span class="hljs-comment">## two are used for docstrings</span>
+
+<span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+      discarding a string can work as a comment
+      &quot;&quot;&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;fin&quot;</span></code></pre><pre style="width: 100%;"><samp class="hljs">fin</samp></pre>
+      </section>
+      <section>
+      <p>variables</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">var</span> letter: <span class="hljs-built_in">char</span> = <span class="hljs-string">'n'</span>  <span class="hljs-comment"># char are c-like in ''</span>
+<span class="hljs-keyword">var</span>
+  lang = <span class="hljs-string">&quot;N&quot;</span> &amp; <span class="hljs-string">&quot;im&quot;</span>     <span class="hljs-comment"># str are in &quot;&quot;, &amp; concats</span>
+  nLen: <span class="hljs-built_in">int</span> = len(lang) <span class="hljs-comment"># : can declare type, w/o infers</span>
+  boat: <span class="hljs-built_in">float</span>           <span class="hljs-comment"># unassigned, but initialized </span>
+  r_str = <span class="hljs-string">r&quot;raw\string\&quot;</span>
+  escaped = <span class="hljs-string">&quot;escaped</span><span class="hljs-meta">\t</span><span class="hljs-meta">\\</span><span class="hljs-string">string&quot;</span>
+
+<span class="hljs-keyword">let</span> legs = <span class="hljs-number">400</span>          <span class="hljs-comment"># immutable</span>
+<span class="hljs-keyword">let</span> arms = <span class="hljs-number">2_000</span>        <span class="hljs-comment"># visual separation</span>
+
+<span class="hljs-keyword">const</span> debug = <span class="hljs-literal">true</span>      <span class="hljs-comment"># computed at compile </span>
+
+<span class="hljs-keyword">discard</span> <span class="hljs-number">1</span>               <span class="hljs-comment"># if not used, compiler complains</span></code></pre>
+      </section>
+      <section>
+      <p>variables (result)</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">proc</span> getAlphabet(): <span class="hljs-built_in">string</span> =
+  <span class="hljs-keyword">for</span> letter <span class="hljs-keyword">in</span> <span class="hljs-string">'a'</span> .. <span class="hljs-string">'z'</span>:
+    <span class="hljs-literal">result</span>.add(letter)
+<span class="hljs-keyword">echo</span> getAlphabet()</code></pre><pre style="width: 100%;"><samp class="hljs">abcdefghijklmnopqrstuvwxyz</samp></pre>
+      <p>result var is an implicit return variable</p>
+      </section>
+      <section>
+      <p>data structs</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-comment"># tuples</span>
+<span class="hljs-keyword">var</span>
+  hacker: <span class="hljs-keyword">tuple</span>[name: <span class="hljs-built_in">string</span>, hacks:<span class="hljs-built_in">int</span>]
+hacker = (<span class="hljs-string">&quot;neo&quot;</span>, <span class="hljs-number">9000</span>)  
+
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Name: &quot;</span> &amp; hacker.name
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hacks: &quot;</span> &amp; $hacker.hacks   <span class="hljs-comment"># type cast to str with $</span></code></pre><pre style="width: 100%;"><samp class="hljs">Name: neo
+Hacks: 9000</samp></pre>
+      </section>
+      <section>
+      <p>data structs (cont)</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-comment"># seqs </span>
+<span class="hljs-keyword">var</span> langs: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>]
+langs = @[<span class="hljs-string">&quot;nim&quot;</span>, <span class="hljs-string">&quot;rust&quot;</span>, <span class="hljs-string">&quot;python&quot;</span>]
+langs.add(<span class="hljs-string">&quot;c&quot;</span>)
+
+<span class="hljs-keyword">echo</span> langs
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;langs size: &quot;</span> &amp; $langs.len
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;idxes: &quot;</span> &amp; $langs.<span class="hljs-keyword">low</span> &amp; <span class="hljs-string">&quot;-&quot;</span> &amp; $langs.<span class="hljs-keyword">high</span></code></pre><pre style="width: 100%;"><samp class="hljs">@[&quot;nim&quot;, &quot;rust&quot;, &quot;python&quot;, &quot;c&quot;]
+langs size: 4
+idxes: 0-3</samp></pre>
+      </section>
+      <section>
+      <p>seq cont</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">var</span> seq2 = newSeq[<span class="hljs-built_in">int</span>]()
+seq2.add(<span class="hljs-number">0</span>)
+seq2.add(<span class="hljs-number">2</span>)
+seq2.add(<span class="hljs-number">4</span>)
+<span class="hljs-keyword">echo</span> seq2
+<span class="hljs-keyword">echo</span> seq2[^<span class="hljs-number">1</span>]</code></pre><pre style="width: 100%;"><samp class="hljs">@[0, 2, 4]
+4</samp></pre>
+      </section>
+      <section>
+      <p>conditionals - python-like</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">var</span> conditional = <span class="hljs-number">42</span>
+<span class="hljs-keyword">if</span> conditional &lt; <span class="hljs-number">0</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;A&quot;</span>
+<span class="hljs-keyword">elif</span> conditional &gt; <span class="hljs-number">0</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;B&quot;</span>
+<span class="hljs-keyword">else</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;C&quot;</span>
+
+<span class="hljs-keyword">var</span> ternary = <span class="hljs-keyword">if</span> conditional == <span class="hljs-number">42</span>: <span class="hljs-literal">true</span> <span class="hljs-keyword">else</span>: <span class="hljs-literal">false</span>
+<span class="hljs-keyword">echo</span> ternary</code></pre><pre style="width: 100%;"><samp class="hljs">B
+true</samp></pre>
+      </section>
+      <section>
+      <p>conditionals - case</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">var</span> case_x = <span class="hljs-number">5</span>
+<span class="hljs-keyword">case</span> case_x
+<span class="hljs-keyword">of</span> <span class="hljs-number">3</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;3&quot;</span>
+<span class="hljs-keyword">of</span> <span class="hljs-number">5</span>,<span class="hljs-number">10</span>,<span class="hljs-number">15</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;5&quot;</span>
+<span class="hljs-keyword">of</span> <span class="hljs-number">7</span>,<span class="hljs-number">14</span>,<span class="hljs-number">21</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;7&quot;</span>
+<span class="hljs-keyword">else</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;unknown&quot;</span></code></pre><pre style="width: 100%;"><samp class="hljs">5</samp></pre>
+      </section>
+      <section>
+      <p>ranges / for loops</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">for</span> i_idx <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> .. <span class="hljs-number">5</span>:
+  <span class="hljs-keyword">echo</span> i_idx
+
+<span class="hljs-keyword">for</span> j_idx <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> ..&lt; <span class="hljs-number">5</span>:
+  <span class="hljs-keyword">echo</span> j_idx</code></pre><pre style="width: 100%;"><samp class="hljs">0
+1
+2
+3
+4
+5
+0
+1
+2
+3
+4</samp></pre>
+      </section>
+      <section>
+      <p>more loop</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> strformat
+<span class="hljs-keyword">for</span> i, letter <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;uscg&quot;</span>:
+  <span class="hljs-keyword">echo</span> &amp;<span class="hljs-string">&quot;letter {i} is {letter}&quot;</span></code></pre><pre style="width: 100%;"><samp class="hljs">letter 0 is u
+letter 1 is s
+letter 2 is c
+letter 3 is g</samp></pre>
+      </section>
+      <section>
+      <p>procs</p>
+      <pre><code>proc doSomething(s: string): string
+  # does something and returns string
+  # s is immutable
+  return someString
+
+var s1 = &quot;i'm a string&quot;
+echo doSomething(s1)  
+</code></pre>
+      </section>
+      <section>
+      <p>discard statement</p>
+      <pre><code>proc doStuff(x,y: int): int =
+  ## does stuff, return result
+
+doStuff(1,2)          # fails to compile
+discard doStuff(1,2)  # compiles
+</code></pre>
+      <p>can add {.discardable.} pargma to be ignored implicitly</p>
+      </section>
+      <section>
+      <p>uniform function call syntax</p>
+      <pre><code>proc procName(arg1, arg2)
+
+# both valid
+procName(a, b)
+a.procName(b) 
+</code></pre>
+      </section>
+      <section>
+      <p>type conversion</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">var</span> int1: <span class="hljs-built_in">int32</span> = <span class="hljs-number">32.</span><span class="hljs-built_in">int32</span>
+<span class="hljs-keyword">var</span> int2: <span class="hljs-built_in">int8</span> = <span class="hljs-built_in">int8</span>(<span class="hljs-string">'a'</span>)
+<span class="hljs-keyword">var</span> float1 = <span class="hljs-number">2.5</span></code></pre>
+      </section>
+      <section>
+      <p>objects</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">type</span>
+  <span class="hljs-type">Person</span> = <span class="hljs-keyword">object</span> 
+    name: <span class="hljs-built_in">string</span>
+    age: <span class="hljs-built_in">int</span>
+<span class="hljs-keyword">var</span> p1 = <span class="hljs-type">Person</span>(name:<span class="hljs-string">&quot;Peter&quot;</span>, age:<span class="hljs-number">30</span>)
+<span class="hljs-keyword">echo</span> p1.name
+
+<span class="hljs-keyword">var</span> p2 = p1 <span class="hljs-comment"># copy of p1</span>
+p2.age += <span class="hljs-number">100</span>
+<span class="hljs-keyword">echo</span> p2.age</code></pre><pre style="width: 100%;"><samp class="hljs">Peter
+130</samp></pre>
+      </section>
+      <section>
+      <p>FFI (foreign function interface)</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">proc</span> strcmp(a, b: <span class="hljs-built_in">cstring</span>): <span class="hljs-built_in">cint</span> {.importc: <span class="hljs-string">&quot;strcmp&quot;</span>, nodecl.}
+<span class="hljs-keyword">proc</span> printf(format: <span class="hljs-built_in">cstring</span>): <span class="hljs-built_in">cint</span> {.importc, <span class="hljs-built_in">varargs</span>, header: <span class="hljs-string">&quot;stdio.h&quot;</span>.}
+<span class="hljs-keyword">let</span> cmp = strcmp(<span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;Nim&quot;</span>)
+<span class="hljs-keyword">discard</span> printf(<span class="hljs-string">&quot;Result of strcmp: %d&quot;</span>, cmp) <span class="hljs-comment"># doesn't print in slides</span></code></pre>
+      </section>
+      </section>
+      <section>
+      <section>
+      <h2>nimble and <a href="https://nim-lang.org/docs/nimc.html">compiler usage</a></h2>
+      </section>
+      <section>
+      <p>nimble init -&gt; create package</p>
+      <figure>
+<img src="../images/nimble.png" alt="">
+<figcaption></figcaption>
+</figure>
+      </section>
+      <section>
+      <p>nimble install <package></p>
+      </section>
+      <section>
+      <p>compiler usage</p>
+      </section>
+      <section>
+      <p>nim command [options] [projectfile] [arguments]</p>
+      <p>nim c -r test.nim</p>
+      <p>nim c -r -d:release test.nim</p>
+      <p>nim js test.nim</p>
+      <p>nim --thread:on threaded_proj.nim</p>
+      </section>
+      <section>
+      <p>--os:SYMBOL =&gt; cross compiliation</p>
+      <p>--cpu:SYMBOL =&gt; cross compilation</p>
+      <p>--mm:SYMBOL =&gt; memory management (gc)</p>
+      <p>--opt:none|speed|size =&gt; optimize</p>
+      <p>-d: =&gt; define switch</p>
+      <p>to cross compile for windows: apt install mingw-w64 (or equivalent for pkgmgr)</p>
+      </section>
+      <section>
+      <p>config.nims file</p>
+      <pre><code>switch(&quot;d&quot;, &quot;ssl&quot;)
+</code></pre>
+      </section>
+      <section>
+      <p>generated c code dir</p>
+      <p>$XDG_CACHE_HOME/nim/$projectname(_r|_d)</p>
+      </section>
+      </section>
+      <section>
+      <section>
+      <h2>hacking</h2>
+      <p>just random things</p>
+      </section>
+      </section>
+      <section>
+      <section>
+      <p>web</p>
+      </section>
+      <section>
+      <p>sending http request 1</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> std/httpclient
+<span class="hljs-comment"># create a client</span>
+<span class="hljs-keyword">var</span> client = newHttpClient()
+<span class="hljs-comment"># send get request</span>
+<span class="hljs-keyword">echo</span> client.getContent(<span class="hljs-string">&quot;https://example.com/&quot;</span>)
+<span class="hljs-comment"># close client</span>
+client.close()</code></pre><pre style="width: 100%;"><samp class="hljs">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Example Domain&lt;/title&gt;
+
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta http-equiv=&quot;Content-type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+    body {
+        background-color: #f0f0f2;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+        
+    }
+    div {
+        width: 600px;
+        margin: 5em auto;
+        padding: 2em;
+        background-color: #fdfdff;
+        border-radius: 0.5em;
+        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+    }
+    a:link, a:visited {
+        color: #38488f;
+        text-decoration: none;
+    }
+    @media (max-width: 700px) {
+        div {
+            margin: 0 auto;
+            width: auto;
+        }
+    }
+    &lt;/style&gt;    
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div&gt;
+    &lt;h1&gt;Example Domain&lt;/h1&gt;
+    &lt;p&gt;This domain is for use in illustrative examples in documents. You may use this
+    domain in literature without prior coordination or asking for permission.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.iana.org/domains/example&quot;&gt;More information...&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</samp></pre>
+      </section>
+      <section>
+      <p>sending http request 2</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> std/httpclient
+<span class="hljs-keyword">var</span> c2 = newHttpClient()
+<span class="hljs-comment"># send request</span>
+<span class="hljs-keyword">var</span> resp = c2.request(<span class="hljs-string">&quot;https://example.com/&quot;</span>,
+                  httpMethod = <span class="hljs-type">HttpGet</span>)
+c2.close()
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Response status: &quot;</span> &amp; resp.status
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Response len: &quot;</span> &amp; $resp.body.len 
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Response headers: &quot;</span> &amp; $resp.headers</code></pre><pre style="width: 100%;"><samp class="hljs">Response status: 200 OK
+Response len: 1256
+Response headers: {&quot;server&quot;: @[&quot;ECS (nyb/1D0F)&quot;], &quot;content-length&quot;: @[&quot;1256&quot;], &quot;vary&quot;: @[&quot;Accept-Encoding&quot;], &quot;age&quot;: @[&quot;508535&quot;], &quot;x-cache&quot;: @[&quot;HIT&quot;], &quot;content-type&quot;: @[&quot;text/html; charset=UTF-8&quot;], &quot;last-modified&quot;: @[&quot;Thu, 17 Oct 2019 07:18:26 GMT&quot;], &quot;date&quot;: @[&quot;Wed, 21 Sep 2022 00:16:29 GMT&quot;], &quot;etag&quot;: @[&quot;\&quot;3147526947+ident\&quot;&quot;], &quot;expires&quot;: @[&quot;Wed, 28 Sep 2022 00:16:29 GMT&quot;], &quot;cache-control&quot;: @[&quot;max-age=604800&quot;]}</samp></pre>
+      </section>
+      <section>
+      <p>std/httpclient</p>
+      <p><a href="https://nim-lang.org/docs/httpclient.html">documentation</a> is good reference for using httpclient.</p>
+      </section>
+      <section>
+      <p>using <a href="https://github.com/treeform/puppy">puppy</a></p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> puppy
+<span class="hljs-keyword">echo</span> fetch(<span class="hljs-string">&quot;http://neverssl.com&quot;</span>)</code></pre><pre style="width: 100%;"><samp class="hljs">&lt;html&gt;
+	&lt;head&gt;
+		&lt;title&gt;NeverSSL - Connecting ... &lt;/title&gt;
+		&lt;style&gt;
+		body {
+			font-family: Montserrat, helvetica, arial, sans-serif;
+			font-size: 16x;
+			color: #444444;
+			margin: 0;
+		}
+		h2 {
+			font-weight: 700;
+			font-size: 1.6em;
+			margin-top: 30px;
+		}
+		p {
+			line-height: 1.6em;
+		}
+		.container {
+			max-width: 650px;
+			margin: 20px auto 20px auto;
+			padding-left: 15px;
+			padding-right: 15px
+		}
+		.header {
+			background-color: #42C0FD;
+			color: #FFFFFF;
+			padding: 10px 0 10px 0;
+			font-size: 2.2em;
+		}
+		.notice {
+			background-color: red;
+			color: white;
+			padding: 10px 0 10px 0;
+			font-size: 1.25em;
+			animation: flash 4s infinite;
+		}
+		@keyframes flash {
+		0% {
+			background-color: red;
+		}
+		50% {
+			background-color: #AA0000;
+		}
+		0% {
+			background-color: red;
+		}
+		}
+		&lt;!-- CSS from Mark Webster https://gist.github.com/markcwebster/9bdf30655cdd5279bad13993ac87c85d --&gt;
+		&lt;/style&gt;
+
+		&lt;script&gt;
+			var adjectives = [ 'cool' , 'calm' , 'relaxed', 'soothing', 'serene', 'slow',
+							'beautiful', 'wonderful', 'wonderous', 'fun', 'good',
+							'glowing', 'inner', 'grand', 'majestic', 'astounding',
+							'fine', 'splendid', 'transcendent', 'sublime', 'whole',
+							'unique', 'old', 'young', 'fresh', 'clear', 'shiny',
+							'shining', 'lush', 'quiet', 'bright', 'silver' ];
+
+			var nouns =	  [ 'day', 'dawn', 'peace', 'smile', 'love', 'zen', 'laugh',
+							'yawn', 'poem', 'song', 'joke', 'verse', 'kiss', 'sunrise',
+							'sunset', 'eclipse', 'moon', 'rainbow', 'rain', 'plan',
+							'play', 'chart', 'birds', 'stars', 'pathway', 'secret',
+							'treasure', 'melody', 'magic', 'spell', 'light', 'morning'];
+
+			var prefix =
+					// Choose 3 zen adjectives
+					adjectives.sort(function(){return 0.5-Math.random()}).slice(-3).join('')
+					+
+					// Coupled with a zen noun
+					nouns.sort(function(){return 0.5-Math.random()}).slice(-1).join('');
+			window.location.href = 'http://' + prefix + '.neverssl.com/online';
+		&lt;/script&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;noscript&gt;
+		&lt;div class=&quot;notice&quot;&gt;
+			&lt;div class=&quot;container&quot;&gt;
+				⚠️ JavaScript appears to be disabled. NeverSSL's cache-busting works better if you enable JavaScript for &lt;code&gt;neverssl.com&lt;/code&gt;.
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/noscript&gt;
+	&lt;div class=&quot;header&quot;&gt;
+		&lt;div class=&quot;container&quot;&gt;
+		&lt;h1&gt;NeverSSL&lt;/h1&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class=&quot;content&quot;&gt;
+	&lt;div class=&quot;container&quot;&gt;
+
+	&lt;h1 id=&quot;status&quot;&gt;&lt;/h1&gt;
+	&lt;script&gt;document.querySelector(&quot;#status&quot;).textContent = &quot;Connecting ...&quot;;&lt;/script&gt;
+	&lt;noscript&gt;
+
+		&lt;h2&gt;What?&lt;/h2&gt;
+		&lt;p&gt;This website is for when you try to open Facebook, Google, Amazon, etc
+		on a wifi network, and nothing happens. Type &quot;http://neverssl.com&quot;
+		into your browser's url bar, and you'll be able to log on.&lt;/p&gt;
+
+		&lt;h2&gt;How?&lt;/h2&gt;
+		&lt;p&gt;neverssl.com will never use SSL (also known as TLS). No
+		encryption, no strong authentication, no &lt;a
+		href=&quot;https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security&quot;&gt;HSTS&lt;/a&gt;,
+		no HTTP/2.0, just plain old unencrypted HTTP and forever stuck in the dark
+		ages of internet security.&lt;/p&gt;
+
+		&lt;h2&gt;Why?&lt;/h2&gt;
+		&lt;p&gt;Normally, that's a bad idea. You should always use SSL and secure
+		encryption when possible. In fact, it's such a bad idea that most websites
+		are now using https by default.&lt;/p&gt;
+
+		&lt;p&gt;And that's great, but it also means that if you're relying on
+		poorly-behaved wifi networks, it can be hard to get online.  Secure
+		browsers and websites using https make it impossible for those wifi
+		networks to send you to a login or payment page. Basically, those networks
+		can't tap into your connection just like attackers can't. Modern browsers
+		are so good that they can remember when a website supports encryption and
+		even if you type in the website name, they'll use https.&lt;/p&gt;
+
+		&lt;p&gt;And if the network never redirects you to this page, well as you can
+		see, you're not missing much.&lt;/p&gt;
+
+        &lt;a href=&quot;https://twitter.com/neverssl&quot;&gt;Follow @neverssl&lt;/a&gt;
+
+	&lt;/noscript&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/body&gt;
+&lt;/html&gt;</samp></pre>
+      </section>
+      <section>
+      <p>puppy use2</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> puppy
+<span class="hljs-keyword">let</span> req = <span class="hljs-type">Request</span>(
+  url: parseUrl(<span class="hljs-string">&quot;http://example.com&quot;</span>),
+  verb: <span class="hljs-string">&quot;get&quot;</span>
+)
+
+<span class="hljs-keyword">let</span> pres = fetch(req)
+<span class="hljs-keyword">echo</span> pres.code
+<span class="hljs-keyword">echo</span> pres.body.len</code></pre><pre style="width: 100%;"><samp class="hljs">200
+1256</samp></pre>
+      </section>
+      </section>
+      <section>
+      <section>
+      <p>os stuff</p>
+      </section>
+      <section>
+      <p>reading file</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">let</span> entireFile = readFile(<span class="hljs-string">&quot;./deliverables/txt_file1.txt&quot;</span>)
+<span class="hljs-keyword">echo</span> entireFile</code></pre><pre style="width: 100%;"><samp class="hljs">text in a file
+a
+b
+c</samp></pre>
+      </section>
+      <section>
+      <pre><code>let f = open(&quot;cats.txt&quot;)
+defer: f.close()
+let fLine = f.readLine()
+</code></pre>
+      </section>
+      <section>
+      <p>writing file</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">let</span> text = <span class="hljs-string">&quot;you can't eat cats kevin&quot;</span>
+writeFile(<span class="hljs-string">&quot;./deliverables/cats_kevin.txt&quot;</span>, text)
+<span class="hljs-keyword">echo</span> readFile(<span class="hljs-string">&quot;./deliverables/cats_kevin.txt&quot;</span>)</code></pre><pre style="width: 100%;"><samp class="hljs">you can't eat cats kevin</samp></pre>
+      </section>
+      <section>
+      <pre><code>let lines = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+let f = open(&quot;cats.txt&quot;)
+defer: f.close()
+
+for line in lines:
+  f.writeLine(line)
+</code></pre>
+      </section>
+      <section>
+      <p>reading user input</p>
+      <pre><code>let name = readLine(stdin)
+let age = readLine(stdin).parseInt()
+</code></pre>
+      </section>
+      <section>
+      <p>executing system cmds</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> std/[osproc]
+<span class="hljs-keyword">var</span> (res, _) = execCmdEx(<span class="hljs-string">&quot;uptime&quot;</span>)
+<span class="hljs-keyword">echo</span> res
+<span class="hljs-keyword">var</span> (res2, err) = execCmdEx(<span class="hljs-string">&quot;date&quot;</span>)
+<span class="hljs-keyword">echo</span> res2</code></pre><pre style="width: 100%;"><samp class="hljs"> 20:16:30 up 1 day, 43 min,  1 user,  load average: 2.26, 1.76, 1.57
+
+Tue Sep 20 08:16:30 PM EDT 2022</samp></pre>
+      </section>
+      <section>
+      <p>interacting with OS with:</p>
+      <ul>
+<li><a href="https://nim-lang.org/docs/os.html">os</a></li>
+</ul>
+      <ul>
+<li><a href="https://nim-lang.org/docs/osproc.html">osproc</a></li>
+</ul>
+      </section>
+      <section>
+      <p>pretty terminal output with:</p>
+      <ul>
+<li><a href="https://nim-lang.org/docs/terminal.html">terminal</a></li>
+</ul>
+      </section>
+      <section>
+      <p>data conversion <a href="https://github.com/nim-lang/Nim/issues/14810">#14810</a></p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">proc</span> toByteSeq*(str: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">seq</span>[byte] {.inline.} =
+  <span class="hljs-comment">## Converts a string to the corresponding byte sequence.</span>
+  @(str.toOpenArrayByte(<span class="hljs-number">0</span>, str.<span class="hljs-keyword">high</span>))
+
+<span class="hljs-keyword">proc</span> toString*(bytes: openArray[byte]): <span class="hljs-built_in">string</span> {.inline.} =
+  <span class="hljs-comment">## Converts a byte sequence to the corresponding string.</span>
+  <span class="hljs-keyword">let</span> length = bytes.len
+  <span class="hljs-keyword">if</span> length &gt; <span class="hljs-number">0</span>:
+    <span class="hljs-literal">result</span> = newString(length)
+    copyMem(<span class="hljs-literal">result</span>.<span class="hljs-built_in">cstring</span>, bytes[<span class="hljs-number">0</span>].unsafeAddr, length)</code></pre>
+      </section>
+      <section>
+      <p>defining different code for different os at compile time</p>
+      <pre><code>when defined(windows):
+  echo &quot;I'd run on windows binary&quot;
+when defined(linux):
+  echo &quot;I'd run on linux binary&quot;
+</code></pre>
+      </section>
+      </section>
+      <section>
+      <section>
+      <p>math</p>
+      </section>
+      <section>
+      <p>nim's std rng</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> std/random
+randomize() <span class="hljs-comment"># init default rng, must be called</span>
+<span class="hljs-keyword">let</span> num = rand(<span class="hljs-number">100</span>)
+<span class="hljs-keyword">echo</span> num</code></pre><pre style="width: 100%;"><samp class="hljs">19</samp></pre>
+      </section>
+      <section>
+      <p>sysrand -&gt; &quot;cryptographically secure&quot; rng</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> std/sysrand  
+<span class="hljs-keyword">echo</span> urandom(<span class="hljs-number">5</span>)</code></pre><pre style="width: 100%;"><samp class="hljs">@[188, 220, 22, 137, 95]</samp></pre>
+      </section>
+      <section>
+      <p>not really math, but kinda math</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> std/base64
+<span class="hljs-keyword">let</span> enc = encode(<span class="hljs-string">&quot;hello uscg&quot;</span>)
+<span class="hljs-keyword">echo</span> enc 
+
+<span class="hljs-keyword">let</span> decoded = decode(<span class="hljs-string">&quot;SGVsbG8gV29ybGQ=&quot;</span>)
+<span class="hljs-keyword">echo</span> decoded == <span class="hljs-string">&quot;Hello World&quot;</span>
+
+<span class="hljs-comment"># url safe</span>
+<span class="hljs-keyword">let</span> u_enc = encode(<span class="hljs-string">&quot;safe_url_encoded&quot;</span>, safe=<span class="hljs-literal">true</span>)
+<span class="hljs-keyword">echo</span> u_enc</code></pre><pre style="width: 100%;"><samp class="hljs">aGVsbG8gdXNjZw==
+true
+c2FmZV91cmxfZW5jb2RlZA==</samp></pre>
+      </section>
+      </section>
+      <section>
+      <section>
+      <p>python interop</p>
+      </section>
+      <section>
+      <p>with <a href="https://github.com/yglukhov/nimpy">nimpy</a>, python can be called from within a nim program</p>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> nimpy
+<span class="hljs-keyword">import</span> nimpy/py_lib
+pyInitLibPath <span class="hljs-string">&quot;/usr/lib/x86_64-linux-gnu/libpython3.10.so.1.0&quot;</span>
+<span class="hljs-keyword">let</span> sys = pyImport(<span class="hljs-string">&quot;sys&quot;</span>)
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Path: &quot;</span> &amp; $sys.version</code></pre><pre style="width: 100%;"><samp class="hljs">Path: 3.10.4 (main, Jun 29 2022, 12:14:53) [GCC 11.2.0]</samp></pre>
+      </section>
+      <section>
+      <pre style="width: 100%"><code class="nim hljs" data-noescape data-line-numbers><span class="hljs-keyword">import</span> nimpy
+<span class="hljs-keyword">import</span> nimpy/py_lib
+pyInitLibPath <span class="hljs-string">&quot;/usr/lib/x86_64-linux-gnu/libpython3.10.so.1.0&quot;</span>
+
+<span class="hljs-keyword">let</span> pwn = pyImport(<span class="hljs-string">&quot;pwn&quot;</span>)
+<span class="hljs-keyword">discard</span> pwn.context(arch=<span class="hljs-string">&quot;amd64&quot;</span>, os=<span class="hljs-string">&quot;linux&quot;</span>)
+<span class="hljs-keyword">var</span> sc = pwn.<span class="hljs-keyword">asm</span>(pwn.shellcraft.sh())
+<span class="hljs-keyword">echo</span> sc</code></pre><pre style="width: 100%;"><samp class="hljs">b'jhH\xb8/bin///sPH\x89\xe7hri\x01\x01\x814$\x01\x01\x01\x011\xf6Vj\x08^H\x01\xe6VH\x89\xe61\xd2j;X\x0f\x05'</samp></pre>
+      </section>
+      <section>
+      <p>nimpy an work both ways, can implement a python module in nim</p>
+      <p>example of this is on nimpy's github</p>
+      </section>
+      </section>
+      <section>
+      <section>
+      <p>c interop</p>
+      </section>
+      <section>
+      <p>with <a href="https://github.com/nim-lang/c2nim">c2nim</a>, ANSI C/Cpp code can be translated to nim.</p>
+      <p>preliminary meant to translate c header files</p>
+      <p>this is cmdline tool</p>
+      </section>
+      </section>
+      <section>
+      <section>
+      <p>windows</p>
+      </section>
+      <section>
+      <p>there are a few libraries that make it easy to interact with the windows api. winim is one of the libraries.</p>
+      <p>winim contains API, struct, and constant definitions for nim</p>
+      </section>
+      <section>
+      <h5>Messagebox</h5>
+      <pre><code>import winim/lean
+
+MessageBox(0, &quot;Title bar&quot;, &quot;text for messagebox&quot;, 0)
+</code></pre>
+      <p><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messagebox">MSDN - MessageBox function - winuser.h</a></p>
+      </section>
+      <section>
+      <h5>Enumerating procs</h5>
+      <pre><code>proc findTarget(target: string): int =
+  var pe32: PROCESSENTRY32W
+  var hProcSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
+  if INVALID_HANDLE_VALUE == hProcSnap: return 0
+  pe32.dwsize = sizeof(PROCESSENTRY32W).DWORD
+  if Process32First(hProcSnap, pe32):
+    while Process32Next(hProcSnap, pe32):
+      if target in $$pe32.szExeFile:
+        CloseHandle(hProcSnap)
+        return pe32.th32ProcessID
+  CloseHandle(hProcSnap)
+  return 0
+</code></pre>
+      </section>
+      <section>
+      <p>let's do process injection</p>
+      <p>windows demo</p>
+      
+      </section>
+      <section>
+      <p>interacting with windows registry</p>
+      <p><a href="https://nim-lang.org/docs/registry.html">std/registry</a> allows access to get and set unicode values.</p>
+      <p><a href="https://github.com/miere43/nim-registry">nim-registry</a> nimble package that deals with windows registry</p>
+      </section>
+      </section>
+      <section>
+      <section>
+      <h2>Resources</h2>
+      </section>
+      <section>
+      <p><a href="https://nim-lang.org/documentation.html">nim documentation</a></p>
+      <p><a href="https://nim-by-example.github.io/">nim-by-example</a></p>
+      
+      <p><a href="https://github.com/nim-lang/Nim/wiki/Curated-Packages">curated packages</a> (bit outdated)</p>
+      <p><a href="https://github.com/ringabout/awesome-nim">awesome-nim</a></p>
+      <p><a href="https://nimble.directory/">official nimble.directory</a></p>
+      <p>nim community discord and irc server</p>
+      </section>
+      <section>
+      <p><a href="https://github.com/nim-lang/Nim/wiki/Nim-for-Python-Programmers">nim for python programmers</a></p>
+      <p><a href="https://rosettacode.org/wiki/Category:Nim">nim on rosettacode</a></p>
+      </section>
+      <section>
+      <p>some personal favorite packages:</p>
+      <ul>
+<li><a href="https://github.com/xmonader/nim-terminaltables">nim-terminaltables</a></li>
+</ul>
+      <ul>
+<li><a href="https://github.com/iffy/nim-argparse">nim-argparse</a></li>
+</ul>
+      <ul>
+<li><a href="https://github.com/byt3bl33d3r/OffensiveNim">OffensiveNim 🐐👑</a></li>
+</ul>
+      <ul>
+<li><a href="https://github.com/FedericoCeratto/nim-morelogging">morelogging</a></li>
+</ul>
+      </section>
+      </section>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.2.0/reveal.js" integrity="sha512-+Dy2HJZ3Z1DWerDhqFE7AH2HTfnbq8RC1pKOashfMwx1s01fjPUebWoHqrRedU1yFimkexmzJJRilKxjs7lz8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.2.0/plugin/highlight/highlight.min.js" integrity="sha512-U3fPDUX5bMrn1wnYqjaK44MFA9E6MKS+zPAg9WPAGF5XhReBeDj3FGaA831CjueG+YJxYA3WaO/m33kMIoOs/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.2.0/plugin/notes/notes.min.js" integrity="sha512-v2co+5nr0bgHekutTzF5jAB0UAjM95dpCF7VVw7WsFCjfxonbQo8Vwl487tNYl0iHWHHGV4o5xKBp5ifyhJkWg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    Reveal.initialize({
+      plugins: [ 
+        RevealHighlight,
+        RevealNotes,
+      ]
+    });
+  </script>
+  </body>
+</html>

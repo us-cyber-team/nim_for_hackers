@@ -1,0 +1,4 @@
+text in a file
+a
+b
+c
