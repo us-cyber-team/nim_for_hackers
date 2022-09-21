@@ -1,3 +1,3 @@
 # Nim for Hackers
 
-Pull repo andopen `index.html` locally
+Pull repo and open `src/index.html` locally
